@@ -29,11 +29,13 @@ class Lieu :
     def set_nom(self, nom):
         self.nom = nom
 
-    def calcul_distance(self, l2):
-         return np.sqrt((l2.x-self.x)**2 + (l2.y-self.y)**2)  
+    def calcul_distance(self, lieu2):
+         return np.sqrt((lieu2.x-self.x)**2 + (lieu2.y-self.y)**2)  
 
 
 class Graph :
+    __NB_lieux = 10
+    
     def __init__(self, liste_lieux, NB_lieux):
         self.liste_lieux = liste_lieux
         self.NB_lieux = NB_lieux
@@ -41,14 +43,8 @@ class Graph :
     def get_liste_lieux(self):
         return self.liste_lieux
 
-    def get_NB_lieux(self):
-        return self.NB_lieux
-
     def set_liste_lieux(self, liste_lieux):
         self.liste_lieux = liste_lieux
-
-    def set_NB_lieux(self, NB_lieux):
-        self.NB_lieux = NB_lieux
 
     def calcul_matrice_cout_od(self):
         pass
@@ -71,6 +67,8 @@ class Graph :
 class Route :
 
     def __init__(self, ordre):
+        if (isinstance(ordre, list){
+           if (length(ordre) == 
         self.ordre = ordre
 
     def get_ordre(self):
