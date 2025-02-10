@@ -76,10 +76,17 @@ class Graph :
 
 class Route :
 
-    def __init__(self, ordre):
-        if (isinstance(ordre, list){
-           if (length(ordre) == 
-        self.ordre = ordre
+    def __init__(self, ordre = None):
+        if(ordre is None):
+            #créer une route aléatoire
+            self.ordre = [0]
+            self.ordre.extend(random.sample(range(1,Graph.__NB_lieux), Graph.__NB_lieux-1))
+            self.ordre.append(0)
+        else : 
+            if length(ordre) == Graph.__NB_lieux and ordre[0] == ordre[length(ordre)-1] :
+                self.ordre = ordre[:]
+            else :
+                print("La route est incorrecte")
 
     def get_ordre(self):
         return self.ordre
