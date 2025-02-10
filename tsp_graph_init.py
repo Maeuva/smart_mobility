@@ -29,8 +29,8 @@ class Lieu :
     def set_nom(self, nom):
         self.__nom = nom
 
-    def calcul_distance(self):
-        pass
+    def calcul_distance(self, l2):
+         return np.sqrt((l2.x-self.x)**2 + (l2.y-self.y)**2)  
 
 
 class Graph :
