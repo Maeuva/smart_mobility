@@ -5,11 +5,18 @@ import panda
 import tkinter
 import csv
 
+NB_LIEUX = 10
+LARGEUR = 800
+HAUTEUR = 600
+
 class Lieu :
-    def __init__(self, x, y, nom) :
-        self.x = x
-        self.y = y
-        self.nom = nom
+    def __init__(self, x=None, y=None) :
+        if (x is None) :
+            x = np.random.rand()*LARGEUR
+        if (y is None) :
+            y = np.random.rand()*HAUTEUR
+        self.x = float(x)
+        self.y = float(y)
 
     def get_x(self) :
         return self.x
@@ -17,39 +24,28 @@ class Lieu :
     def get_y(self) :
         return self.y
 
-    def get_nom(self) :
-        return self.nom
-
     def set_x(self, x):
         self.x = x
 
     def set_y(self, y):
         self.y = y
 
-    def set_nom(self, nom):
-        self.nom = nom
-
     def calcul_distance(self, lieu2):
          return np.sqrt((lieu2.x-self.x)**2 + (lieu2.y-self.y)**2)  
 
+    def __repr__(self):
+        return "(" + str(round(self.x,2)) + "," + str(round(self.y,2)) + ")"
+        
 
 class Graph :
-    __NB_lieux = 10
-    
-    def __init__(self, liste_lieux, NB_lieux):
-        self.liste_lieux = liste_lieux
-        self.NB_lieux = NB_lieux
+  
+    def __init__(self, liste_lieux = None, NB_LIEUX):
+        if liste_lieux is None :
+            self.liste_lieux = [ Lieu() for i in range(NB_LIEUX)]
+        else :            
+            self.liste_lieux = liste_lieux
 
     def get_liste_lieux(self):
-        #générer des coordonnées aléatoires pour les lieux
-        i = 0 
-        while i =< Graph.__NB_lieux :
-            nombre_aleatoire_x = random.uniform(0,800)
-            nombre_aleatoire_y = random.uniform(0,600)
-            liste_lieux.append(nombre_aleatoire_x)
-            liste_lieux.append(nombre_aleatoire_y)
-            i += 1
-
         return self.liste_lieux
 
 
@@ -57,7 +53,7 @@ class Graph :
         self.liste_lieux = liste_lieux
 
     def calcul_matrice_cout_od(self):
-        pass
+        matrice_od = 
         # return matrice_od
 
     def plus_proche_voisin(self):
@@ -80,10 +76,10 @@ class Route :
         if(ordre is None):
             #créer une route aléatoire
             self.ordre = [0]
-            self.ordre.extend(random.sample(range(1,Graph.__NB_lieux), Graph.__NB_lieux-1))
+            self.ordre.extend(random.sample(range(1,NB_LIEUX), NB_LIEUX-1))
             self.ordre.append(0)
         else : 
-            if length(ordre) == Graph.__NB_lieux and ordre[0] == ordre[length(ordre)-1] :
+            if length(ordre) == NB_LIEUX and ordre[0] == ordre[length(ordre)-1] :
                 self.ordre = ordre[:]
             else :
                 print("La route est incorrecte")
