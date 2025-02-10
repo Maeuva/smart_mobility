@@ -39,6 +39,14 @@ class Graph :
         self.__NB_lieux = NB_lieux
 
     def get_liste_lieux(self):
+        #générer des coordonnées aléatoires pour les lieux
+        i = 0 
+        while i =< Graph.__NB_lieux :
+            nombre_aleatoire_x = random.uniform(0,800)
+            nombre_aleatoire_y = random.uniform(0,600)
+            liste_lieux.append(nombre_aleatoire_x)
+            liste_lieux.append(nombre_aleatoire_y)
+            i += 1    
         return self.__liste_lieux
 
     def get_NB_lieux(self):
