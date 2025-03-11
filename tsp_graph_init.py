@@ -53,8 +53,13 @@ class Graph :
         self.liste_lieux = liste_lieux
 
     def calcul_matrice_cout_od(self):
-        matrice_od = 
-        # return matrice_od
+        matrice_od = []
+        for i range(NB_LIEUX) :
+            row = []
+            for j in range(NB_LIEUX) : 
+                row.append(set_liste_lieux[i].calcul_distance(set_liste_lieux[j])
+            matrice_od.append(row)
+        return matrice_od 
 
     def plus_proche_voisin(self):
         pass
