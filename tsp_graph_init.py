@@ -54,7 +54,7 @@ class Graph :
 
     def calcul_matrice_cout_od(self):
         matrice_od = []
-        for i range(NB_LIEUX) :
+        for i in range(NB_LIEUX) :
             row = []
             for j in range(NB_LIEUX) : 
                 row.append(set_liste_lieux[i].calcul_distance(set_liste_lieux[j])
