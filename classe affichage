@@ -1,0 +1,36 @@
+import random
+import tkinter as tk
+import csv
+import numpy as np
+
+# Constantes pour la taille de la fenêtre
+NB_LIEUX = 10
+LARGEUR = 800
+HAUTEUR = 600
+
+class Graph:
+    def __init__(self):
+        """Initialise un graphe avec des lieux aléatoires et une matrice vide."""
+        self.liste_lieux = self.generer_lieux()
+        self.matrice_od = None
+
+    def generer_lieux(self):
+        """Génère des lieux avec des coordonnées aléatoires."""
+        return [(random.randint(50, LARGEUR - 50), random.randint(50, HAUTEUR - 50)) for _ in range(NB_LIEUX)]
+
+    def charger_matrice_od(self, fichier_matrice):
+        """Charge la matrice de distances à partir d'un fichier CSV."""
+        try:
+            with open(fichier_matrice, newline='', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                self.matrice_od = np.array([list(map(float, row)) for row in reader])
+        except Exception as e:
+            print(f"Erreur lors du chargement de la matrice de distances : {e}")
+
+class Affichage:
+    def __init__(self, graph, nom_groupe="Groupe Maéva BONNIN, Audrey BOURHIS, Kanelle RICA"):
+        self.graph = graph
+        self.root = tk.Tk()  # Initialisation correcte de Tkinter
+        self.root.title(nom_groupe)
+
+        # Créat
