@@ -44,10 +44,9 @@ class Graph :
             self.liste_lieux = [ Lieu() for i in range(NB_LIEUX)]
         else :            
             self.liste_lieux = liste_lieux
-
+    
     def get_liste_lieux(self):
         return self.liste_lieux
-
 
     def set_liste_lieux(self, liste_lieux):
         self.liste_lieux = liste_lieux
@@ -62,21 +61,28 @@ class Graph :
         return matrice_od 
 
     def plus_proche_voisin(self):
-        pass
-        # return plus_proche_voisin_dun_lieu
+        liste_voisins = []
+        for i in range(NB_LIEUX):
+            min_dist = self.calcul_matrice_cout_od()[i][0]
+            numero_lieu = 0
+            for j in range(1,NB_LIEUX):
+                valeur = self.calcul_matrice_cout_od()[i][j]
+                if (min_dist > valeur and valeur != 0) or min_dist == 0:
+                    min_dist = self.calcul_matrice_cout_od()[i][j]
+                    numero_lieux = j
+            liste_voisins.append(self.liste_lieux[numero_lieux])
+        return liste_voisins
 
-    def charger_graph(self):
-        pass
 
-    def charger_matrice_od(self):
-        pass
-
-    def calcul_distance_route(self):
-        pass
-
-       def __init__(self):
-        self.liste_lieux = []  # Liste des lieux avec leurs coordonnées
-        self.matrice_od = None  # Matrice des distances
+    def calcul_distance_route(self, liste_coordonnees):
+        lieu = liste_coordonnees[0]
+        somme_distance = 0
+        for i in range(1, NB_LIEUX):
+            somme_distance += Lieu.calcul_distance(lieu, liste_coordonnees[i])
+            print(Lieu.calcul_distance(lieu, liste_coordonnees[i]))
+            lieu = liste_coordonnees[i]
+        somme_distance += Lieu.calcul_distance(liste_coordonnees[0], liste_coordonnees[NB_LIEUX-1])
+        return somme_distance
     
     def charger_graph(self, fichier_lieux):
         """Charge la liste des lieux à partir d'un fichier CSV."""
