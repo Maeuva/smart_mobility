@@ -77,6 +77,7 @@ class Route :
         if(ordre is None):
             #créer une route aléatoire
             self.ordre = [0]
+            #on ajoute une permutation de nb lieux sans le zero range(1, NB_LIEUX)
             self.ordre.extend(random.sample(range(1,NB_LIEUX), NB_LIEUX-1))
             self.ordre.append(0)
         else : 
