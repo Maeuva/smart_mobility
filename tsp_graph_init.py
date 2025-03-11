@@ -71,8 +71,9 @@ class Graph :
 
 
 class Route :
-
+    #ordre vaut None par defaut
     def __init__(self, ordre = None):
+        #on vérifie si ordre est rempli
         if(ordre is None):
             #créer une route aléatoire
             self.ordre = [0]
