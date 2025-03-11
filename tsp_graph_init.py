@@ -74,6 +74,31 @@ class Graph :
     def calcul_distance_route(self):
         pass
 
+       def __init__(self):
+        self.liste_lieux = []  # Liste des lieux avec leurs coordonnées
+        self.matrice_od = None  # Matrice des distances
+    
+    def charger_graph(self, fichier_lieux):
+        """Charge la liste des lieux à partir d'un fichier CSV."""
+        self.liste_lieux = []  # Réinitialisation
+        try:
+            with open(fichier_lieux, newline='', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)  # Ignorer l'en-tête si présent
+                for row in reader:
+                    x, y = map(float, row)  # Convertir les coordonnées en flottants
+                    self.liste_lieux.append((x, y))
+        except Exception as e:
+            print(f"Erreur lors du chargement du fichier des lieux : {e}")
+    
+    def charger_matrice_od(self, fichier_matrice):
+        """Charge la matrice de distances à partir d'un fichier CSV."""
+        try:
+            with open(fichier_matrice, newline='', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                self.matrice_od = np.array([list(map(float, row)) for row in reader])
+        except Exception as e:
+            print(f"Erreur lors du chargement de la matrice de distances : {e}")
 
 class Route :
     #ordre vaut None par defaut
@@ -99,9 +124,58 @@ class Route :
 
 
 class Affichage :
+    
+    def __init__(self, graph, nom_groupe="Groupe Maéva BONNIN, Audrey BOURHIS, Kanelle RICA"):
+        self.graph = graph
+        self.root = tk.Tk()
+        self.root.title(nom_groupe)
+        
+        self.canvas = tk.Canvas(self.root, width=Graph.LARGEUR, height=Graph.HAUTEUR, bg="white")
+        self.canvas.pack()
+        
+        self.info_label = tk.Label(self.root, text="", anchor="w", justify="left")
+        self.info_label.pack(fill="x")
+        
+        self.root.bind("<Escape>", self.fermer_fenetre)
+        self.root.bind("<space>", self.afficher_routes)
+        
+        self.dessiner_lieux()
+        
+    def dessiner_lieux(self):
+        """Dessine les lieux sous forme de cercles avec leur numéro."""
+        for i, (x, y) in enumerate(self.graph.liste_lieux):
+            self.canvas.create_oval(x-5, y-5, x+5, y+5, fill="red")
+            self.canvas.create_text(x, y, text=str(i), font=("Arial", 12, "bold"))
+    
 
-    def __init__(self, ):
+     def afficher_routes(self, event=None):
+        """Affiche les N meilleures routes en gris et la meilleure en bleu pointillé."""
+        if self.graph.matrice_od is None:
+            print("Matrice des distances non chargée.")
+            return
+        
+        # Exemple d'affichage des routes (logique simplifiée)
+        n = min(5, len(self.graph.liste_lieux))  # Nombre de routes affichées
+        for i in range(n):
+            if i == 0:
+                couleur = "blue"
+                style = (5, 5)
+            else:
+                couleur = "lightgray"
+                style = ()
+            
+            for j in range(len(self.graph.liste_lieux) - 1):
+                x1, y1 = self.graph.liste_lieux[j]
+                x2, y2 = self.graph.liste_lieux[j + 1]
+                self.canvas.create_line(x1, y1, x2, y2, fill=couleur, dash=style)
+                self.canvas.create_text(x1 + 10, y1, text=str(j + 1), font=("Arial", 10))
         pass
+    
+    def fermer_fenetre(self, event=None):
+        self.root.quit()
+    
+    def run(self):
+        self.root.mainloop()
 
 class TSP_GA :
     pass
