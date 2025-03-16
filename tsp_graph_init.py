@@ -1,8 +1,8 @@
-import numpy
+import numpy as np
 import random
 import time
-import pandas
-import tkinter
+import pandas as pd
+import tkinter as tk
 import csv
 
 NB_LIEUX = 10
