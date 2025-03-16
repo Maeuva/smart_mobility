@@ -1,7 +1,7 @@
 import numpy
 import random
 import time
-import panda
+import pandas
 import tkinter
 import csv
 
@@ -39,7 +39,7 @@ class Lieu :
 
 class Graph :
   
-    def __init__(self, liste_lieux = None, NB_LIEUX):
+    def __init__(self, NB_LIEUX, liste_lieux = None):
         if liste_lieux is None :
             self.liste_lieux = [ Lieu() for i in range(NB_LIEUX)]
         else :            
@@ -56,7 +56,7 @@ class Graph :
         for i in range(NB_LIEUX) :
             row = []
             for j in range(NB_LIEUX) : 
-                row.append(set_liste_lieux[i].calcul_distance(set_liste_lieux[j])
+                row.append(set_liste_lieux[i].calcul_distance(set_liste_lieux[j]))
             matrice_od.append(row)
         return matrice_od 
 
