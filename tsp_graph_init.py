@@ -230,6 +230,63 @@ class Graph:
     def run(self):
         self.root.mainloop()'''
 
+class Affichage:
+    def __init__(self, route, graph):
+        self.route = route  # La route est une liste de points (tuples)
+        self.graph = graph
+
+        # Fenêtre tkinter
+        self.root = tk.Tk()
+        self.root.title("Groupe Audrey Maeva Kanelle")
+
+        # Canvas pour dessiner
+        self.canvas = tk.Canvas(self.root, width=LARGEUR, height=HAUTEUR, bg="white")
+        self.canvas.pack()
+
+        # Affichage des points et de la route
+        self.afficher_points()
+        self.afficher_route()
+
+    def afficher_points(self):
+        # Affiche chaque point de la route comme un cercle avec son numéro
+        for i, (x, y, nom) in enumerate(self.route):
+            if i==0:
+                # Cercle pour le point
+                self.canvas.create_oval(
+                    x - RAYON, y - RAYON,
+                    x + RAYON, y + RAYON,
+                    fill="red", outline="black"
+            )
+            else:
+                # Cercle pour le point
+                self.canvas.create_oval(
+                    x - RAYON, y - RAYON,
+                    x + RAYON, y + RAYON,
+                    fill="lightblue", outline="black"
+            )
+
+            # Affiche le numéro du point
+            self.canvas.create_text(x, y, text=str(nom), fill="black")
+            #Affiche l'ordre de passage du point
+            self.canvas.create_text(x, y - 30, text=str(i), fill="black")
+
+    def afficher_route(self):
+        # Trace les lignes entre les points de la route
+        for i in range(len(self.route) - 1):
+            x1, y1 = self.route[i][0], self.route[i][1]
+            x2, y2 = self.route[i + 1][0], self.route[i + 1][1],
+            print(x1, x2, y1, y2)
+            self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
+ 
+
+        # Relie le dernier point au premier pour fermer la route
+        x1, y1 = self.route[-1][0], self.route[-1][1]
+        x2, y2 = self.route[0][0], self.route[0][1]
+        self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
+
+    def run(self):
+        self.root.mainloop()
+
 
 class Affichage:
 
