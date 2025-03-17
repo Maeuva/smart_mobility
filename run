@@ -2,19 +2,21 @@ import json
 import random
 from tsp_graph_init import Graph, Route, Affichage
 
-graph = Graph()
+
 file_path = "graph_5.csv"
-graph.charger_graph(file_path)
-liste_lieux = graph.get_liste_lieux()
-lieux_depart = liste_lieux[0]
-route = Route()
-route = graph.route_ppv(lieux_depart.nom)
-route.distance = graph.calcul_distance_route(route.ordre)
+
+graph1 = Graph()
+graph1.charger_graph(file_path)
+liste_lieux = graph1.get_liste_lieux()
+lieux_depart1 = liste_lieux[0]
+route1 = graph1.route_ppv(lieux_depart1.nom)
+route1.distance = graph1.calcul_distance_route(route1.ordre)
 
 # Création d'un dictionnaire pour un accès rapide aux lieux par leur numéro
-lieux_dict = {lieu.nom: (lieu.x, lieu.y) for lieu in graph.liste_lieux}  # On garde seulement (x, y)
+lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in graph1.liste_lieux}  
 
 # Trier les lieux selon l'ordre donné
-route_heuristique = [lieux_dict[num] for num in route.ordre]
-affichage = Affichage(route)
+route_heuristique = [lieux_dict[num] for num in route1.ordre]
+print(route_heuristique)
+affichage = Affichage(route_heuristique, graph1)
 affichage.run()
