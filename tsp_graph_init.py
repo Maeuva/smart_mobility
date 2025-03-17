@@ -231,21 +231,42 @@ class Graph:
         self.root.mainloop()'''
 
 class Affichage:
-    def __init__(self, route, graph):
+    def __init__(self, route, graph, matrice_od):
+        super().__init__() 
         self.route = route  # La route est une liste de points (tuples)
         self.graph = graph
+        self.matrice_od = matrice_od
 
         # Fenêtre tkinter
         self.root = tk.Tk()
         self.root.title("Groupe Audrey Maeva Kanelle")
 
+        # appuyer sur la touche echap pour fermer le programme
+        self.bind_all("<Escape>", self.fermer)
+        #appuyer sur la touche M pour afficher la matrice de cout
+        self.bind_all("<m>", self.afficher_matrice)
+        # Forcer le focus sur la fenêtre principale
+        self.focus_force()
+        
         # Canvas pour dessiner
         self.canvas = tk.Canvas(self.root, width=LARGEUR, height=HAUTEUR, bg="white")
         self.canvas.pack()
 
         # Affichage des points et de la route
-        self.afficher_points()
         self.afficher_route()
+        self.afficher_points()
+
+        #zone d'affichage de la matrice de cout
+        self.label_matrice = tk.Label(self, text="", anchor="w")
+        self.label_matrice.pack(pady=10)
+
+        #zone d'affichage du nombre d'iteration et de la meilleur distance
+        self.label_info = tk.Label(self, anchor="w", justify="left")
+        self.label_info.pack(pady=10, fill="both", padx=10)
+
+    def fermer(self, event=None):
+        print("ESC press detected! Closing window.")  # Debug print
+        self.destroy()
 
     def afficher_points(self):
         # Affiche chaque point de la route comme un cercle avec son numéro
@@ -262,7 +283,7 @@ class Affichage:
                 self.canvas.create_oval(
                     x - RAYON, y - RAYON,
                     x + RAYON, y + RAYON,
-                    fill="lightblue", outline="black"
+                    fill="lightgrey", outline="black"
             )
 
             # Affiche le numéro du point
@@ -284,6 +305,15 @@ class Affichage:
         x2, y2 = self.route[0][0], self.route[0][1]
         self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
 
+    def afficher_matrice(self, event=None):
+        # Convertir la matrice en texte pour l'affichage
+        matrice_texte = "\n".join(["\t".join(map(str, ligne)) for ligne in self.matrice_od])
+        self.label_matrice.config(text=matrice_texte)  # Afficher dans le label
+ 
+    def mettre_a_jour_label_info(self, texte):
+       # Met à jour le label avec un seul texte sans accumulation
+       self.label_info.config(text=texte)  # Remplace le texte existant par le nouveau texte
+    
     def run(self):
         self.root.mainloop()
 
