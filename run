@@ -14,9 +14,21 @@ route1.distance = graph1.calcul_distance_route(route1.ordre)
 
 # Création d'un dictionnaire pour un accès rapide aux lieux par leur numéro
 lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in graph1.liste_lieux}  
+matrice = graph.matrice_cout_od
 
 # Trier les lieux selon l'ordre donné
 route_heuristique = [lieux_dict[num] for num in route1.ordre]
 print(route_heuristique)
-affichage = Affichage(route_heuristique, graph1)
+affichage = Affichage(route_heuristique, graph1, matrice)
+
+# Simuler un algorithme d'itération
+for i in range(1, 21):  # 10 itérations
+      meilleur_distance = 100 - i  # Exemple de données fictives
+      texte_iteration = f"Distance {meilleur_distance}km trouvée en {i}/20 iterations."
+      # Mise à jour du label à chaque itération
+      affichage.mettre_a_jour_label_info(texte_iteration)
+      # Pour simuler un algorithme, on peut ajouter une petite pause pour que l'interface se mette à jour
+      time.sleep(1)  # Délai de 1 seconde entre les itérations
+    
+
 affichage.run()
