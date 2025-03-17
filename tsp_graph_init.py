@@ -95,10 +95,10 @@ class Graph :
 
     def calcul_matrice_cout_od(self):
         matrice_od = []
-        for i in range(NB_LIEUX) :
+        for i in range(NB_LIEUX):
             row = []
-            for j in range(NB_LIEUX) : 
-                row.append(set_liste_lieux[i].calcul_distance(set_liste_lieux[j]))
+            for j in range(NB_LIEUX):
+                row.append(self.liste_lieux[i].calcul_distance(self.liste_lieux[j]))
             matrice_od.append(row)
         return matrice_od 
 
