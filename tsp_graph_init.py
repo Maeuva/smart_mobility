@@ -8,6 +8,7 @@ import csv
 NB_LIEUX = 10
 LARGEUR = 800
 HAUTEUR = 600
+RAYON = 20
 
 class Lieu :
     def __init__(self, x=None, y=None, nom=None):
@@ -39,7 +40,7 @@ class Lieu :
         
 class Route :
     #ordre vaut None par defaut
-    def __init__(self, ordre = None):
+    def __init__(self, ordre = None, distance = None):
         #on vérifie si ordre est rempli
         if(ordre is None):
             #créer une route aléatoire
@@ -52,6 +53,7 @@ class Route :
                 self.ordre = ordre[:]
             else :
                 print("La route est incorrecte")
+        self.distance = distance
 
     def get_ordre(self):
         return self.ordre
@@ -77,6 +79,8 @@ class Route :
     def __ge__(self, autre_route):
         return self.distance >= autre_route.distance
 
+    '''def __repr__(self):
+        return "La route est " + str(self.ordre) + " et sa distance est de " + str(self.distance)'''
 
 class Graph :
   
@@ -147,7 +151,7 @@ class Graph :
         return Route(ordre, self.calcul_distance_route(ordre))
 
     
-        def charger_graph(self, fichier_lieux):
+    def charger_graph(self, fichier_lieux):
         """Charge la liste des lieux à partir d'un fichier CSV."""
         self.liste_lieux = []  # Réinitialisation
         try:
