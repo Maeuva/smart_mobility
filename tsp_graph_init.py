@@ -373,8 +373,47 @@ class Affichage:
 
 
 class TSP_GA:
-    def __init__(self):
-        pass
+    def __init__(self, graph, file_path, taille_population=10, iterations=10, taux_mutation=0.1, nb_best_routes=2):
+        self.graph = graph  # Matrice des distances
+        self.file_path = file_path
+        self.taille_population = taille_population
+        self.iteration = iterations
+        self.taux_mutation = taux_mutation
+        self.nb_best_routes = nb_best_routes
+        self.population = self.generer_population(self.taille_population, self.file_path)
+
+
+    def generer_population(self):
+        population=[]
+        for i in range(self.taille_population):
+            self.graph.charger_graph(self.file_path)
+            liste_lieux = self.graph.get_liste_lieux()
+            lieux_depart = liste_lieux[i]
+            route = self.graph.route_ppv(lieux_depart.nom)
+            route.distance = self.graph.calcul_distance_route(route.ordre)
+            population.append(route)
+        return population
+
+    def best_routes(self):
+        return sorted(self.population, key=lambda route: route.distance)[:self.nb_best_routes]
+
+    def croisement_OX1(self, parent1, parent2):
+        """ Croisement OX1 (Order Crossover) """
+        taille = len(parent1)
+        debut, fin = sorted(random.sample(range(taille), 2))
+
+        enfant = [None] * taille
+        enfant[debut:fin] = parent1[debut:fin]  # Garde une section du premier parent
+
+        reste = [lieu for lieu in parent2 if lieu not in enfant]
+        index = 0
+
+        for i in range(taille):
+            if enfant[i] is None:
+                enfant[i] = reste[index]
+                index += 1
+
+        return enfant
 
         '''liste_lieux_restants = liste_lieux.copy()
         premier_lieu = liste_lieux[0]
