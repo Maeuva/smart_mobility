@@ -2,33 +2,13 @@ import json
 import random
 from tsp_graph_init import Graph, Route, Affichage
 
-
 file_path = "graph_5.csv"
 
-graph1 = Graph()
-graph1.charger_graph(file_path)
-liste_lieux = graph1.get_liste_lieux()
-lieux_depart1 = liste_lieux[0]
-route1 = graph1.route_ppv(lieux_depart1.nom)
-route1.distance = graph1.calcul_distance_route(route1.ordre)
-
-# Création d'un dictionnaire pour un accès rapide aux lieux par leur numéro
-lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in graph1.liste_lieux}  
-matrice = graph.matrice_cout_od
-
-# Trier les lieux selon l'ordre donné
-route_heuristique = [lieux_dict[num] for num in route1.ordre]
-print(route_heuristique)
-affichage = Affichage(route_heuristique, graph1, matrice)
-
-# Simuler un algorithme d'itération
-for i in range(1, 21):  # 10 itérations
-      meilleur_distance = 100 - i  # Exemple de données fictives
-      texte_iteration = f"Distance {meilleur_distance}km trouvée en {i}/20 iterations."
-      # Mise à jour du label à chaque itération
-      affichage.mettre_a_jour_label_info(texte_iteration)
-      # Pour simuler un algorithme, on peut ajouter une petite pause pour que l'interface se mette à jour
-      time.sleep(1)  # Délai de 1 seconde entre les itérations
-    
-
+graph = Graph(file_path)
+graph.charger_graph(file_path)
+liste_lieux = graph.get_liste_lieux()
+lieux_depart = liste_lieux[3]
+route = graph.route_ppv(lieux_depart.nom)
+route.distance = graph.calcul_distance_route(route.ordre)
+affichage = Affichage(graph, route)
 affichage.run()
