@@ -133,8 +133,9 @@ class Graph:
         lieu_pp = next((lieu for lieu in lieux_voisins if lieu.nom == min_value["name"]), None)
         return lieu_pp
 
+
     def route_ppv(self, nom_lieu_depart) -> Route():
-        lieu_actuel = self.liste_lieux[0]
+        lieu_actuel = self.liste_lieux[nom_lieu_depart]
         ordre = [nom_lieu_depart]
         lieux_restants = self.liste_lieux.copy()
         for lieu in lieux_restants:
@@ -148,7 +149,7 @@ class Graph:
         ordre.append(nom_lieu_depart)
         print("La route est " + str(ordre) + " et sa distance est de " + str(self.calcul_distance_route(ordre)))
         return Route(ordre)
-
+        
     '''def route_ppv(self, lieu_depart) -> Route():
         lieu_actuel = 0
         ordre = [lieu_depart]
@@ -231,11 +232,10 @@ class Graph:
         self.root.mainloop()'''
 
 class Affichage:
-    def __init__(self, route, graph, matrice_od):
+    def __init__(self, rout, graph, matrice_od):
         super().__init__() 
         self.route = route  # La route est une liste de points (tuples)
         self.graph = graph
-        self.matrice_od = matrice_od
 
         # Fenêtre tkinter
         self.root = tk.Tk()
@@ -307,7 +307,7 @@ class Affichage:
 
     def afficher_matrice(self, event=None):
         # Convertir la matrice en texte pour l'affichage
-        matrice_texte = "\n".join(["\t".join(map(str, ligne)) for ligne in self.matrice_od])
+        matrice_texte = "\n".join(["\t".join(map(str, ligne)) for ligne in self.graph.matrice_cout_od])
         self.label_matrice.config(text=matrice_texte)  # Afficher dans le label
  
     def mettre_a_jour_label_info(self, texte):
