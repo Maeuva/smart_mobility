@@ -59,7 +59,6 @@ class Affichage(tk.Tk):
 
     def afficher_route(self, route_points, color):
         # Trace les lignes entre les points de la route
-        self.lignes_tracees = set()  # Stocke les lignes déjà créées
         print("texte",route_points)
         for i in range(len(route_points) - 1):
             x1, y1 = route_points[i][0], route_points[i][1]
