@@ -231,11 +231,12 @@ class Graph:
     def run(self):
         self.root.mainloop()'''
 
-class Affichage:
-    def __init__(self, rout, graph, matrice_od):
-        super().__init__() 
-        self.route = route  # La route est une liste de points (tuples)
+class Affichage(tk.Tk):
+    def __init__(self, graph, route):
+        super().__init__()
         self.graph = graph
+        self.route = route
+        self.route_points = self.change_route(route)  # La route est une liste de points (tuples)
 
         # Fenêtre tkinter
         self.root = tk.Tk()
@@ -243,11 +244,11 @@ class Affichage:
 
         # appuyer sur la touche echap pour fermer le programme
         self.bind_all("<Escape>", self.fermer)
-        #appuyer sur la touche M pour afficher la matrice de cout
+        # appuyer sur la touche M pour afficher la matrice de cout
         self.bind_all("<m>", self.afficher_matrice)
         # Forcer le focus sur la fenêtre principale
         self.focus_force()
-        
+
         # Canvas pour dessiner
         self.canvas = tk.Canvas(self.root, width=LARGEUR, height=HAUTEUR, bg="white")
         self.canvas.pack()
@@ -256,13 +257,18 @@ class Affichage:
         self.afficher_route()
         self.afficher_points()
 
-        #zone d'affichage de la matrice de cout
+        # zone d'affichage de la matrice de cout
         self.label_matrice = tk.Label(self, text="", anchor="w")
         self.label_matrice.pack(pady=10)
 
-        #zone d'affichage du nombre d'iteration et de la meilleur distance
+        # zone d'affichage du nombre d'iteration et de la meilleur distance
         self.label_info = tk.Label(self, anchor="w", justify="left")
         self.label_info.pack(pady=10, fill="both", padx=10)
+
+    def change_route(self, route):
+        lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in self.graph.liste_lieux}
+        route_heuristique = [lieux_dict[num] for num in route.ordre]
+        return route_heuristique
 
     def fermer(self, event=None):
         print("ESC press detected! Closing window.")  # Debug print
@@ -270,50 +276,49 @@ class Affichage:
 
     def afficher_points(self):
         # Affiche chaque point de la route comme un cercle avec son numéro
-        for i, (x, y, nom) in enumerate(self.route):
-            if i==0:
+        for i, (x, y, nom) in enumerate(self.route_points):
+            if i == 0:
                 # Cercle pour le point
                 self.canvas.create_oval(
                     x - RAYON, y - RAYON,
                     x + RAYON, y + RAYON,
                     fill="red", outline="black"
-            )
+                )
             else:
                 # Cercle pour le point
                 self.canvas.create_oval(
                     x - RAYON, y - RAYON,
                     x + RAYON, y + RAYON,
                     fill="lightgrey", outline="black"
-            )
+                )
 
             # Affiche le numéro du point
             self.canvas.create_text(x, y, text=str(nom), fill="black")
-            #Affiche l'ordre de passage du point
+            # Affiche l'ordre de passage du point
             self.canvas.create_text(x, y - 30, text=str(i), fill="black")
 
     def afficher_route(self):
         # Trace les lignes entre les points de la route
-        for i in range(len(self.route) - 1):
-            x1, y1 = self.route[i][0], self.route[i][1]
-            x2, y2 = self.route[i + 1][0], self.route[i + 1][1],
+        for i in range(len(self.route_points) - 1):
+            x1, y1 = self.route_points[i][0], self.route_points[i][1]
+            x2, y2 = self.route_points[i + 1][0], self.route_points[i + 1][1],
             print(x1, x2, y1, y2)
             self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
- 
 
         # Relie le dernier point au premier pour fermer la route
-        x1, y1 = self.route[-1][0], self.route[-1][1]
-        x2, y2 = self.route[0][0], self.route[0][1]
+        x1, y1 = self.route_points[-1][0], self.route_points[-1][1]
+        x2, y2 = self.route_points[0][0], self.route_points[0][1]
         self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
 
     def afficher_matrice(self, event=None):
         # Convertir la matrice en texte pour l'affichage
         matrice_texte = "\n".join(["\t".join(map(str, ligne)) for ligne in self.graph.matrice_cout_od])
         self.label_matrice.config(text=matrice_texte)  # Afficher dans le label
- 
+
     def mettre_a_jour_label_info(self, texte):
-       # Met à jour le label avec un seul texte sans accumulation
-       self.label_info.config(text=texte)  # Remplace le texte existant par le nouveau texte
-    
+        # Met à jour le label avec un seul texte sans accumulation
+        self.label_info.config(text=texte)  # Remplace le texte existant par le nouveau texte
+
     def run(self):
         self.root.mainloop()
 
