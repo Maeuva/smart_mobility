@@ -1,68 +1,90 @@
-import random
-import tkinter as tk
-import csv
-import numpy as np
-
-# Constantes pour la taille de la fenêtre
-NB_LIEUX = 10
-LARGEUR = 800
-HAUTEUR = 600
-
-class Affichage:
-    def __init__(self, graph, nom_groupe="Groupe Maéva BONNIN, Audrey BOURHIS, Kanelle RICA"):
+class Affichage(tk.Tk):
+    def __init__(self, graph, route):
+        super().__init__()
         self.graph = graph
-        self.root = tk.Tk()  # Initialisation correcte de Tkinter
-        self.root.title(nom_groupe)
+        self.route = route
+        
+        self.title("Groupe Audrey Maeva Kanelle")
 
-        # Création du canvas pour le dessin
-        self.canvas = tk.Canvas(self.root, width=LARGEUR, height=HAUTEUR, bg="white")
+        # appuyer sur la touche echap pour fermer le programme
+        self.bind_all("<Escape>", self.fermer)
+        # appuyer sur la touche M pour afficher la matrice de cout
+        self.bind_all("<m>", self.afficher_matrice)
+        # Forcer le focus sur la fenêtre principale
+        self.focus_force()
+
+        # Canvas pour dessiner
+        self.canvas = tk.Canvas(self, width=LARGEUR, height=HAUTEUR, bg="white")
         self.canvas.pack()
 
-        # Zone de texte pour les informations
-        self.info_label = tk.Label(self.root, text="", anchor="w", justify="left")
-        self.info_label.pack(fill="x")
+        # Affichage des points et de la route
+        self.afficher_route(self.change_route())
+        self.afficher_points(self.change_route())
 
-        # Liaison des touches
-        self.root.bind("<Escape>", self.fermer_fenetre)
-        self.root.bind("<space>", self.afficher_routes)
+        # zone d'affichage de la matrice de cout
+        self.label_matrice = tk.Label(self, text="", anchor="w")
+        self.label_matrice.pack(pady=10)
 
-        # Dessiner les lieux
-        self.dessiner_lieux()
+        # zone d'affichage du nombre d'iteration et de la meilleur distance
+        self.label_info = tk.Label(self, anchor="w", justify="left")
+        self.label_info.pack(pady=10)
 
-    def dessiner_lieux(self):
-        """Dessine les lieux sous forme de cercles avec leur numéro."""
-        for i, (x, y) in enumerate(self.graph.liste_lieux):
-            self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="red")
-            self.canvas.create_text(x, y, text=str(i), font=("Arial", 12, "bold"))
+    def change_route(self):
+        lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in self.graph.liste_lieux}
+        route_heuristique = [lieux_dict[num] for num in self.route.ordre]
+        return route_heuristique
 
-    def afficher_routes(self, event=None):
-        """Affiche les N meilleures routes en gris et la meilleure en bleu pointillé."""
-        if self.graph.matrice_od is None:
-            print("Matrice des distances non chargée.")
-            return
+    def fermer(self, event=None):
+        print("ESC press detected! Closing window.")  # Debug print
+        self.destroy()
 
-        n = min(5, len(self.graph.liste_lieux))  # Nombre de routes affichées
-        for i in range(n):
-            couleur = "blue" if i == 0 else "lightgray"
-            style = (5, 5) if i == 0 else ()
+    def afficher_points(self, route_points):
+        # Affiche chaque point de la route comme un cercle avec son numéro
+        for i, (x, y, nom) in enumerate(route_points):
+            if nom == 0:
+                # Cercle pour le point
+                self.canvas.create_oval(
+                    x - RAYON, y - RAYON,
+                    x + RAYON, y + RAYON,
+                    fill="red", outline="black"
+                )
+            else:
+                # Cercle pour le point
+                self.canvas.create_oval(
+                    x - RAYON, y - RAYON,
+                    x + RAYON, y + RAYON,
+                    fill="lightgrey", outline="black"
+                )
 
-            for j in range(len(self.graph.liste_lieux) - 1):
-                x1, y1 = self.graph.liste_lieux[j]
-                x2, y2 = self.graph.liste_lieux[j + 1]
-                self.canvas.create_line(x1, y1, x2, y2, fill=couleur, dash=style)
-                self.canvas.create_text(x1 + 10, y1, text=str(j + 1), font=("Arial", 10))
+            # Affiche le numéro du point
+            self.canvas.create_text(x, y, text=str(nom), fill="black")
+            # Affiche l'ordre de passage du point
+            self.canvas.create_text(x, y - 30, text=str(i), fill="black")
 
-    def fermer_fenetre(self, event=None):
-        """Ferme la fenêtre Tkinter."""
-        self.root.quit()
+    def afficher_route(self, route_points):
+        # Trace les lignes entre les points de la route
+        print("texte",route_points)
+        for i in range(len(route_points) - 1):
+            x1, y1 = route_points[i][0], route_points[i][1]
+            x2, y2 = route_points[i + 1][0], route_points[i + 1][1],
+            print(x1, x2, y1, y2)
+            self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
 
+        # Relie le dernier point au premier pour fermer la route
+        x1, y1 = route_points[-1][0], route_points[-1][1]
+        x2, y2 = route_points[0][0], route_points[0][1]
+        self.canvas.create_line(x1, y1, x2, y2, fill="blue", dash=(5, 2))
+
+    def afficher_matrice(self, event=None):
+        # Convertir la matrice en texte pour l'affichage
+        matrice_texte = "\n".join(["\t".join(map(str, ligne)) for ligne in self.graph.matrice_cout_od])
+        self.label_matrice.config(text=matrice_texte)  # Afficher dans le label
+ 
+    def mettre_a_jour_label_info(self):
+       # Met à jour le label avec un seul texte sans accumulation
+       self.label_info.config(text = "La distance est : " + str(self.route.distance) + " pour "+str(10) + " itérations") 
+    
     def run(self):
-        """Lance la boucle principale Tkinter."""
-        self.root.mainloop()
-
-# Exécution du programme
-if __name__ == "__main__":
-    graph = Graph()  # Création du graphe avec des lieux aléatoires
-    affichage = Affichage(graph)  # Création de l'affichage
-    affichage.run()  # Lancement de l'interface graphique
+        self.mettre_a_jour_label_info()
+        self.mainloop()
 
