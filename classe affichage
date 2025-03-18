@@ -81,13 +81,13 @@ class Affichage(tk.Tk):
        # Met à jour le label avec un seul texte sans accumulation
        self.label_info.config(text = "La distance est : " + str(self.route.distance) + " pour "+str(10) + " itérations") 
     
-    def aff_best_routes(liste_best_route):
+    def aff_best_routes(self, liste_best_route):
         if len(liste_best_route) >= 2:
             for i in range(1,len(liste_best_route)):
-                afficher_points(liste_best_route[i])
-                afficher_route(liste_best_route[i],grey)
-        afficher_points(liste_best_route[0])
-        afficher_route(liste_best_route[0],blue)
+                self.afficher_points(liste_best_route[i])
+                self.afficher_route(liste_best_route[i],'grey')
+        self.afficher_points(liste_best_route[0])
+        self.afficher_route(liste_best_route[0], 'blue')
     
     def run(self):
         self.mettre_a_jour_label_info()
