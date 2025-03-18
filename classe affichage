@@ -86,6 +86,7 @@ class Affichage(tk.Tk):
     
     def run(self):
         self.mettre_a_jour_label_info()
+        self.aff_best_routes()
         self.mainloop()
 
 
