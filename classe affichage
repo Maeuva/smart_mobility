@@ -94,13 +94,102 @@ class Affichage(tk.Tk):
         self.aff_best_routes()
         self.mainloop()
 
-meilleure_route = min(self.population, key=lambda route: route.distance)
-ancienne_meilleure_route = meilleure_route  # Initialisation de la première meilleure route
+class TSP_GA:
+    def __init__(self, graph, file_path, taille_population=NB_LIEUX, iterations=100, taux_mutation=0.1):
+        self.graph = graph  # Matrice des distances
+        self.file_path = file_path
+        self.taille_population = taille_population
+        self.iterations = iterations
+        self.taux_mutation = taux_mutation
+        self.nb_best_routes = taille_population // 2
+        self.population = self.generer_population()
 
-# Vérification si la meilleure route a changé
-            if meilleure_route == ancienne_meilleure_route:
-                print(f"La meilleure route n'a pas changé à l'itération {i}. Fin de l'évolution.")
-                break  # On arrête l'évolution si la meilleure route ne change pas
+    def generer_population(self):
+        population = []
+        for i in range(self.taille_population):
+            route = self.graph.route_ppv(random.randint(0, NB_LIEUX - 1))
+            route.distance = self.graph.calcul_distance_route(route.ordre)
+            population.append(route)
+        return population
 
- # Mise à jour de la meilleure route précédemment affichée
- ancienne_meilleure_route = meilleure_route
+    def best_routes(self):
+        return sorted(self.population, key=lambda route: route.distance)[:self.nb_best_routes]
+
+    def croisement_OX1(self, parent1, parent2):
+        """ Croisement OX1 (Order Crossover) """
+        debut, fin = sorted(random.sample(range(NB_LIEUX), 2))
+
+        ordre = [None] * NB_LIEUX
+        ordre[debut:fin] = parent1[debut:fin]  # Garde une section du premier parent
+
+        reste = [lieu for lieu in parent2 if lieu not in ordre]
+        index = 0
+
+        for i in range(NB_LIEUX):
+            if ordre[i] is None:
+                ordre[i] = reste[index]
+                index += 1
+        ordre.append(ordre[0])
+        enfant = Route()
+        enfant.ordre = ordre
+        enfant.distance = self.graph.calcul_distance_route(ordre)
+        return enfant
+
+    def mutation(self, route):
+        """ Applique une mutation sans modifier le point de départ et d'arrivée """
+        if random.random() < self.taux_mutation:
+            i, j = random.sample(range(1, len(route) - 1), 2)  # Éviter le premier et dernier élément
+            route[i], route[j] = route[j], route[i]
+
+        # Assurer que le premier et dernier élément sont toujours identiques
+        route[-1] = route[0]
+
+        return route
+
+    def evolution(self, lieu_depart=0):
+        meilleure_pop = self.best_routes()
+        affichage = Affichage(self.graph, meilleure_pop[0])
+
+        meilleure_route = min(self.population, key=lambda route: route.distance)
+        ancienne_meilleure_distance = meilleure_route.distance  # Initialisation de la première meilleure distance
+
+        """ Effectue l'évolution sur plusieurs générations """
+        for i in range(self.iterations):
+            # Sélection et reproduction
+            for _ in range(self.nb_best_routes // 2):
+                parent1 = self.best_routes()[random.randint(0, self.nb_best_routes - 1)]
+                parent2 = self.best_routes()[random.randint(0, self.nb_best_routes - 1)]
+                parent3 = self.best_routes()[random.randint(0, self.nb_best_routes - 1)]
+                parent4 = self.best_routes()[random.randint(0, self.nb_best_routes - 1)]
+                enfant1 = self.croisement_OX1(parent1.ordre, parent2.ordre)
+                enfant2 = self.croisement_OX1(parent2.ordre, parent3.ordre)
+                enfant3 = self.croisement_OX1(parent3.ordre, parent4.ordre)
+                enfant4 = self.croisement_OX1(parent4.ordre, parent1.ordre)
+
+                meilleure_pop.append(Route(self.mutation(enfant1.ordre), self.graph.calcul_distance_route(self.mutation(enfant1.ordre))))
+                meilleure_pop.append(Route(self.mutation(enfant2.ordre), self.graph.calcul_distance_route(self.mutation(enfant2.ordre))))
+                meilleure_pop.append(Route(self.mutation(enfant3.ordre), self.graph.calcul_distance_route(self.mutation(enfant3.ordre))))
+                meilleure_pop.append(Route(self.mutation(enfant4.ordre), self.graph.calcul_distance_route(self.mutation(enfant4.ordre))))
+
+                # Remplacement de la population
+                self.population = meilleure_pop
+                meilleure_route = min(self.population, key=lambda route: route.distance)
+
+            # Si la meilleure distance n'a pas changé depuis l'itération précédente, on arrête
+            if abs(meilleure_route.distance - ancienne_meilleure_distance) < 1e-6:  # Critère de tolérance
+                print(f"La meilleure route a été trouvée à l'itération {i}. Arrêt de l'évolution.")
+                break  # On arrête l'évolution si la distance n'a pas changé
+
+            # Mise à jour de l'affichage
+            affichage.route = meilleure_route
+            affichage.canvas.delete("text_ordre")
+            affichage.canvas.delete("lines")
+            affichage.aff_best_routes(self.best_routes())
+
+            affichage.mettre_a_jour_label_info(i, self.iterations)
+            affichage.update()
+
+            # Mise à jour de la meilleure distance précédemment affichée
+            ancienne_meilleure_distance = meilleure_route.distance
+
+        return f"La meilleure route est {str(meilleure_route.ordre)} et sa distance est de {str(meilleure_route.distance)}"
