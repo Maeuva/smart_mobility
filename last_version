@@ -280,13 +280,18 @@ class Affichage(tk.Tk):
 
 
 class TSP_GA:
-    def __init__(self, graph, file_path, taille_population=NB_LIEUX, iterations=100, taux_mutation=0.1):
+    def __init__(self, graph, file_path, iterations=100, taux_mutation=0.1):
         self.graph = graph  # Matrice des distances
         self.file_path = file_path
-        self.taille_population = taille_population
+        
+        if NB_LIEUX <= 100 : 
+            self.taille_population = NB_LIEUX
+        else : 
+            self.taille_population = 100    
+        
         self.iterations = iterations
         self.taux_mutation = taux_mutation
-        self.nb_best_routes = taille_population//2
+        self.nb_best_routes = self.taille_population//2
         self.population = self.generer_population()
 
 
