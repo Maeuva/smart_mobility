@@ -175,12 +175,12 @@ class TSP_GA:
                 self.population = meilleure_pop
                 meilleure_route = min(self.population, key=lambda route: route.distance)
 
-            # Si la meilleure distance n'a pas changé depuis l'itération précédente, on arrête
+            # Si la meilleure distance a changé, on continue les itérations
             if abs(meilleure_route.distance - ancienne_meilleure_distance) < 1e-6:  # Critère de tolérance
                 print(f"La meilleure route a été trouvée à l'itération {i}. Arrêt de l'évolution.")
                 break  # On arrête l'évolution si la distance n'a pas changé
 
-            # Mise à jour de l'affichage
+            # Mise à jour de l'affichage pour chaque itération
             affichage.route = meilleure_route
             affichage.canvas.delete("text_ordre")
             affichage.canvas.delete("lines")
