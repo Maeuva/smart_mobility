@@ -1,6 +1,6 @@
 from tsp_graph_init import Graph, TSP_GA
 
-file_path = "graph_20.csv"
+file_path = "graph_"+ str(NB_LIEUX)+".csv"
 
 graph = Graph(file_path)
 graph.charger_graph(file_path)
