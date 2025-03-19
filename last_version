@@ -237,7 +237,10 @@ class Affichage(tk.Tk):
             self.canvas.create_text(x, y, text=str(nom), fill="black")
             # Affiche l'ordre de passage du point
             if ordre:
+                ordre_tag = f"ordre_{i}"
+                self.canvas.delete(ordre_tag)
                 self.canvas.create_text(x, y - 30, text=str(i), fill="black", tags="ordre")
+
 
     def afficher_route(self, route_points, color):
         # Trace les lignes entre les points de la route
