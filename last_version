@@ -199,11 +199,11 @@ class Affichage(tk.Tk):
 
         # zone d'affichage de la matrice de cout
         self.label_matrice = tk.Label(self, text="", anchor="w")
-        self.label_matrice.pack(pady=10)
+        self.label_matrice.pack(pady=0.5)
 
         # zone d'affichage du nombre d'iteration et de la meilleur distance
         self.label_info = tk.Label(self, anchor="w", justify="left")
-        self.label_info.pack(pady=10)
+        self.label_info.pack(pady=0.5)
 
     def change_route(self, route):
         lieux_dict = {lieu.nom: (lieu.x, lieu.y, lieu.nom) for lieu in self.graph.liste_lieux}
