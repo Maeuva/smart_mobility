@@ -102,12 +102,14 @@ class Graph:
         self.liste_lieux = liste_lieux
 
     def calcul_matrice_cout_od(self):
-        matrice_od = []
+        matrice_od = [[0 for _ in range(NB_LIEUX)] for _ in range(NB_LIEUX)]
+    
         for i in range(NB_LIEUX):
-            row = []
-            for j in range(NB_LIEUX):
-                row.append(self.liste_lieux[i].calcul_distance(self.liste_lieux[j]))
-            matrice_od.append(row)
+            for j in range(i + 1, NB_LIEUX):
+                distance = self.liste_lieux[i].calcul_distance(self.liste_lieux[j])
+                matrice_od[i][j] = distance
+                matrice_od[j][i] = distance  # Symétrique
+        print (matrice_od)
         return matrice_od
 
     def calcul_distance_route(self, ordre):
