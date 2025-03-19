@@ -93,3 +93,14 @@ class Affichage(tk.Tk):
         self.mettre_a_jour_label_info()
         self.aff_best_routes()
         self.mainloop()
+
+meilleure_route = min(self.population, key=lambda route: route.distance)
+ancienne_meilleure_route = meilleure_route  # Initialisation de la première meilleure route
+
+# Vérification si la meilleure route a changé
+            if meilleure_route == ancienne_meilleure_route:
+                print(f"La meilleure route n'a pas changé à l'itération {i}. Fin de l'évolution.")
+                break  # On arrête l'évolution si la meilleure route ne change pas
+
+ # Mise à jour de la meilleure route précédemment affichée
+ ancienne_meilleure_route = meilleure_route
