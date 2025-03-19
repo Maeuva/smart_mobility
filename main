@@ -1,0 +1,8 @@
+from tsp_graph_init import Graph, TSP_GA
+
+file_path = "graph_20.csv"
+
+graph = Graph(file_path)
+graph.charger_graph(file_path)
+gene = TSP_GA(graph, file_path)
+print(gene.evolution())
